@@ -9,11 +9,14 @@ var options = explorer ? explorer.config : {}
 
 
 module.exports = {
-  process: src => {
-    var { code } = babel.transformSync(src, {
-      plugins: ['@babel/plugin-transform-modules-commonjs']
+  process: (src, filename) => {
+    var babelResult = babel.transformSync(src, {
+      plugins: ['@babel/plugin-transform-modules-commonjs'],
+      sourceMaps: true,
+      filename: filename
     });
 
-    return buble.transform(code, options).code;
+    var { code } = buble.transform(babelResult.code, options);
+    return { code: code, map: babelResult.map };
   }
 };
